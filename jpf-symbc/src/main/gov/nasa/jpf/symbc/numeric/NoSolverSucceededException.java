@@ -1,4 +1,4 @@
-package gov.nasa.jpf.symbc.numeric.solvers;
+package gov.nasa.jpf.symbc.numeric;
 
 public class NoSolverSucceededException extends RuntimeException {
 

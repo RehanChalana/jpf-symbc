@@ -144,11 +144,26 @@ public class SymbolicConstraintsGeneral {
                                             (IntegerExpression) Observations.lastObservedSymbolicExpression));
                         }
                     }
-                    result = resultSolver.solve();
+                    Boolean curRes = resultSolver.solve();
+
+                    if (SymbolicInstructionFactory.debugMode)
+                        System.out.println("numeric PC: " + pc + " -> " + curRes + "\n");
+
+                    if(result != null && result != curRes) {
+                        throw new SolverResultMismatchException(
+                                "## Error: different solvers returned different results for the same path condition: "
+                                        + pc + "\n"
+                                        + "Previous result: " + result + " from solver: " + solvers.get(i - 1).getClass().getSimpleName() + "\n"
+                                        + "Current result: " + curRes + " from solver: " + solvers.get(i).getClass().getSimpleName() + "\n"
+                        );
+                    }
+                    result = curRes;
+
                 }
 
-                break;
-
+            } catch (SolverResultMismatchException e) {
+                System.err.println(e.getMessage());
+                throw e;
             } catch (Exception e) {
                 if (SymbolicInstructionFactory.debugMode) {
                     System.err.println("Exception in parsing or solving with solver "
@@ -156,7 +171,7 @@ public class SymbolicConstraintsGeneral {
                     e.printStackTrace();
                 }
                 // throw an exception if no solver is able to produce a result
-                if (i == solvers.size() - 1) {
+                if (i == solvers.size() - 1 && result == null) {
                     throw new NoSolverSucceededException(
                             "Error: no solver could parse or solve the path condition: " + pc + "\n");
                 }
