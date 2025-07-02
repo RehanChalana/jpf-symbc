@@ -666,6 +666,7 @@ public class ProblemZ3 extends ProblemGeneral {
 
 	public Boolean solve() {
         try {
+			System.out.println(solver.toString());
             if (Status.SATISFIABLE == solver.check()) {
                 return true;
             } else {
