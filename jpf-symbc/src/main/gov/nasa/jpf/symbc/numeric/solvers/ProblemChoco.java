@@ -325,11 +325,10 @@ public class ProblemChoco extends ProblemGeneral {
 
         Boolean result = pb.solve();
 //        if (result == null)
-        	System.out.println("Choco PC"+pb.pretty());
+		System.out.println(pb.pretty());
 		return result;
 	}
 	public void post(Object constraint) {
-		System.out.println((choco.Constraint)constraint);
 		pb.post((choco.Constraint)constraint);
 	}
 
