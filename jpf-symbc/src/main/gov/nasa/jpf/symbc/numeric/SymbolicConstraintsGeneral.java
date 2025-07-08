@@ -163,6 +163,7 @@ public class SymbolicConstraintsGeneral {
 
             } catch (SolverResultMismatchException e) {
                 System.err.println(e.getMessage());
+                throw e;
             } catch (Exception e) {
                 if (SymbolicInstructionFactory.debugMode) {
                     System.err.println("Exception in parsing or solving with solver "

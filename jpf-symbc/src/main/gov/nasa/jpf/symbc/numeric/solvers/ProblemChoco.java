@@ -57,7 +57,10 @@ public class ProblemChoco extends ProblemGeneral {
 	}
 
 	public IntDomainVar makeIntVar(String name, long min, long max) {
-		assert(min>=Integer.MIN_VALUE && max<=Integer.MAX_VALUE);
+		// Choco recommends staying within Integer.MIN_VALUE / 100 and Integer.MAX_VALUE / 100
+		// to avoid arithmetic overflows during constraint propagation.
+		if(min < (Integer.MIN_VALUE / 100)) min = Integer.MIN_VALUE / 100;
+		if(max > (Integer.MAX_VALUE / 100)) max = Integer.MAX_VALUE / 100;
 		return pb.makeBoundIntVar(name, (int) min, (int) max);
 	}
 
@@ -321,11 +324,16 @@ public class ProblemChoco extends ProblemGeneral {
 	}
 
 	public Boolean solve() {
-        pb.getSolver().setTimeLimit(ProblemChoco.timeBound);
+		pb.getSolver().setTimeLimit(ProblemChoco.timeBound);
 
-        Boolean result = pb.solve();
-//        if (result == null)
-		System.out.println(pb.pretty());
+		Boolean result = pb.solve();
+
+		if (result == null) {
+			throw new RuntimeException("## Error Choco: solver returned null (possibly due to timeout or internal error).\n" +
+					"Time limit: " + ProblemChoco.timeBound + " seconds\n" +
+					"Problem state:\n" + pb.pretty());
+		}
+
 		return result;
 	}
 	public void post(Object constraint) {
