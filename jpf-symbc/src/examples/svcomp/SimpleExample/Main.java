@@ -4,7 +4,7 @@ import org.sosy_lab.sv_benchmarks.Verifier;
 
 public class Main {
 
-    public static void test(int a) {
+    public static void test(double a) {
         if(a > 0) {
             if(a < 100) {
                 System.out.println("Branch P001");
@@ -17,7 +17,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        int a = Verifier.nondetInt();
+        double a = Verifier.nondetDouble();
         test(a);
     }
 }

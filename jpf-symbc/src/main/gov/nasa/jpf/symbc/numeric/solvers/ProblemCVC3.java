@@ -762,7 +762,7 @@ public class ProblemCVC3 extends ProblemGeneral {
 			if (pb==null)
 				return true;
 			//Expr ex = test();
-			//System.out.println("Query: " + pb.toString());
+			System.out.println("Query: " + pb.toString());
 			vc.push();
 			SatResult result = vc.checkUnsat(pb);
 			//QueryResult result = vc.query(eq); //does not seem to work properly

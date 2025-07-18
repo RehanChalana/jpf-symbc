@@ -70,13 +70,17 @@
 
 target=svcomp.SimpleExample.Main
 
+symbolic.debug=true
+
 
 classpath=${jpf-symbc}/build/examples,${jpf-symbc}/lib/com.ibm.wala.util-1.4.4-SNAPSHOT.jar
-symbolic.dp=choco
+symbolic.dp=z3,cvc3
 symbolic.min_int=-2147483648
 symbolic.max_int=2147483647
-symbolic.min_double=-10000.0
-symbolic.max_double=10000.0
+symbolic.min_double=4.9E-324
+symbolic.max_double=1.7976931348623157E308
+#symbolic.min_double=-10000.0
+#symbolic.max_double=10000.0
 symbolic.bvlength=64
 search.depth_limit=13
 symbolic.strings=true
