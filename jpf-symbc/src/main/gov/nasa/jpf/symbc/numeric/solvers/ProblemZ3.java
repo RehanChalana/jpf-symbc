@@ -95,6 +95,9 @@ public class ProblemZ3 extends ProblemGeneral {
 		Z3Wrapper z3 = Z3Wrapper.getInstance();
 		solver = z3.getSolver();
 		ctx = z3.getCtx();
+//		Params p = ctx.mkParams();
+//		p.add("timeout", 1000);
+//		solver.setParameters(p);
 		solver.push();
 		useFpForReals = SymbolicInstructionFactory.fp;
 	}
@@ -127,8 +130,12 @@ public class ProblemZ3 extends ProblemGeneral {
 				return expr;
 			} else {
 				RealExpr expr = ctx.mkRealConst(name);
-				solver.add(ctx.mkGe(expr, ctx.mkReal("" + min)));
-				solver.add(ctx.mkLe(expr, ctx.mkReal("" + max)));
+				// Convert to plain decimal string to avoid scientific notation
+				// (e.g., 1.0E-10 → "0.0000000001")
+				String minDecimalStr = java.math.BigDecimal.valueOf(min).toPlainString();
+				String maxDecimalStr = java.math.BigDecimal.valueOf(max).toPlainString();
+				solver.add(ctx.mkGe(expr, ctx.mkReal(minDecimalStr)));
+				solver.add(ctx.mkLe(expr, ctx.mkReal(maxDecimalStr)));
 				return expr;
 			}
 		} catch (Exception e) {
@@ -665,13 +672,17 @@ public class ProblemZ3 extends ProblemGeneral {
     }
 
 	public Boolean solve() {
+		System.out.println(solver.toString());
         try {
-			System.out.println(solver.toString());
-            if (Status.SATISFIABLE == solver.check()) {
-                return true;
-            } else {
-                return false;
-            }
+			Status status = solver.check();
+			switch (status) {
+				case SATISFIABLE:
+					return true;
+				case UNSATISFIABLE:
+					return false;
+				default:
+					throw new RuntimeException("## Error Z3: Unexpected Z3 status: " + status + " possibly due to timeout.");
+			}
         } catch(Exception e){
         	e.printStackTrace();
         	throw new RuntimeException("## Error Z3: " + e);
